@@ -49,6 +49,11 @@ export class ProductController {
     });
   }
 
+  @Get('/get-user-product')
+  getUserProduct() {
+    return this.product.getProductAndUser();
+  }
+
   @Delete(':id')
   deleteProduct(@Res() res: Response, @Param('id', ParseIntPipe) id: number) {
     const findProduct = this.product.getProductById(id);

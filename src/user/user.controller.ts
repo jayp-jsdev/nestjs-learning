@@ -20,6 +20,16 @@ export class UserController {
 
   @Patch()
   updateUser(@Body() user: UpdateUserDTO) {
-    return this.userservice.updateUser(user)
+    return this.userservice.updateUser(user);
+  }
+
+  @Get('/config-key')
+  configKey() {
+    return this.userservice.getConfigKey();
+  }
+
+  @Post('/login')
+  loginUser() {
+    return this.userservice.loginUser();
   }
 }

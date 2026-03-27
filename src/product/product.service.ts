@@ -1,8 +1,14 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject, forwardRef } from '@nestjs/common';
 import { ProductType } from 'src/lib/Type';
+import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class ProductService {
+  constructor(
+    @Inject(forwardRef(() => UserService))
+    private readonly userservice: UserService,
+  ) {}
+
   product: ProductType[] = [];
 
   addProduct(productData: ProductType) {
@@ -14,8 +20,12 @@ export class ProductService {
     return filterProduct;
   }
 
+  getProductAndUser() {
+    return { product: this.product, user: this.userservice.users };
+  }
+
   getProduct() {
-    return this.product;
+    return this.userservice.isAuthenticated ? this.product : [];
   }
 
   getProductById(id: number) {
