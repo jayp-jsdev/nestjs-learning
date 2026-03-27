@@ -1,15 +1,8 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Param,
-  ParseIntPipe,
-  Post,
-  UsePipes,
-} from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
 import { UserService } from './user.service';
-import { ZodValidationPipe } from 'src/pipes/validationPipes';
-import { CreateUser, createUserSchema } from 'src/lib/validation/zodSchema';
+import { CreateUserDTO } from './dtos/create-user-dtos';
+import { UserParamDTO } from './dtos/user-params-dtos';
+import { UpdateUserDTO } from './dtos/update-user.dto';
 
 @Controller('/user')
 export class UserController {
@@ -17,13 +10,16 @@ export class UserController {
 
   @Post('/add-user')
   // @UsePipes(new ZodValidationPipe(createUserSchema))
-  addUser(
-    @Body(new ZodValidationPipe(createUserSchema as any)) body: CreateUser,
-  ) {
+  addUser(@Body() body: CreateUserDTO) {
     return this.userservice.addUser(body);
   }
   @Get('/get-user/:id')
-  getUser(@Param('id', ParseIntPipe) id: number) {
-    return this.userservice.getUser(id);
+  getUser(@Param() param: UserParamDTO) {
+    return this.userservice.getUser(param.id);
+  }
+
+  @Patch()
+  updateUser(@Body() user: UpdateUserDTO) {
+    return this.userservice.updateUser(user)
   }
 }
