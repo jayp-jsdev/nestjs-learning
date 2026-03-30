@@ -10,10 +10,10 @@ import {
   Res,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
-import { ProductType } from 'src/lib/Type';
 import { Response } from 'express';
+import { ProductType } from '../lib/Type';
 
-@Controller('product')
+@Controller()
 export class ProductController {
   constructor(private readonly product: ProductService) {}
 

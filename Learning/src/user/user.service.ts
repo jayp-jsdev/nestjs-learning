@@ -1,7 +1,7 @@
 import { Inject, Injectable, forwardRef } from '@nestjs/common';
-import { CreateUser } from 'src/lib/validation/zodSchema';
 import { UpdateUserDTO } from './dtos/update-user.dto';
-import { ProductService } from 'src/product/product.service';
+import { ProductService } from '../product/product.service';
+import { CreateUserDTO } from './dtos/create-user-dtos';
 
 @Injectable()
 export class UserService {
@@ -11,10 +11,10 @@ export class UserService {
     private readonly product: ProductService,
   ) {}
 
-  users: CreateUser[] = [];
+  users: CreateUserDTO[] = [];
   isAuthenticated: boolean = false;
 
-  addUser(body: CreateUser) {
+  addUser(body: CreateUserDTO) {
     return this.users.push(body);
   }
 

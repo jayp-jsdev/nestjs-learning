@@ -5,7 +5,7 @@ import { UserParamDTO } from './dtos/user-params-dtos';
 import { UpdateUserDTO } from './dtos/update-user.dto';
 import { validate } from 'class-validator';
 
-@Controller('/user')
+@Controller()
 export class UserController {
   constructor(private readonly userservice: UserService) {}
 
