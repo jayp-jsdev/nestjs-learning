@@ -1,8 +1,9 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, ValidationPipe } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDTO } from './dtos/create-user-dtos';
 import { UserParamDTO } from './dtos/user-params-dtos';
 import { UpdateUserDTO } from './dtos/update-user.dto';
+import { validate } from 'class-validator';
 
 @Controller('/user')
 export class UserController {
@@ -15,6 +16,7 @@ export class UserController {
   }
   @Get('/get-user/:id')
   getUser(@Param() param: UserParamDTO) {
+    console.log("Get User Called")
     return this.userservice.getUser(param.id);
   }
 
