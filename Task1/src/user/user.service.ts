@@ -1,42 +1,71 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateUserDTO } from './dto/create-user-dto';
 import { UpdateUserDTO } from './dto/update-user-dto';
 import { plainToInstance } from 'class-transformer';
 import { UserResponseDTO } from './dto/user-response-dto';
 import bcrypt from 'bcrypt';
+import { InjectRepository } from '@nestjs/typeorm';
+import { User } from './entity/user.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class UserService {
-  private users: CreateUserDTO[] = [];
+  constructor(
+    @InjectRepository(User) private userRepository: Repository<User>,
+  ) {}
 
   async createUser(user: CreateUserDTO) {
-    const hashPassword = await bcrypt.hash(user.password, 10);
-    this.users.push({ ...user, password: hashPassword });
-    return plainToInstance(UserResponseDTO, user, {
-      excludeExtraneousValues: true,
+    const checkUser = await this.userRepository.findOneBy({
+      username: user.username,
     });
-  }
 
-  getUser() {
-    return plainToInstance(UserResponseDTO, this.users, {
-      excludeExtraneousValues: true,
-    });
-  }
-
-  checkUserByUsername(username: string) {
-    const findUser = this.users.find(
-      (user) => user.username.toLowerCase() === username.toLowerCase(),
-    );
-
-    if (findUser) {
-      return findUser;
+    if (checkUser) {
+      throw new HttpException('User Already Exist', HttpStatus.OK);
     }
 
-    return null;
+    const hashPassword = (await bcrypt.hash(user.password, 10)) as string;
+    const userData = plainToInstance(User, { ...user, password: hashPassword });
+
+    await this.userRepository.save(userData);
+
+    return plainToInstance(UserResponseDTO, userData, {
+      excludeExtraneousValues: true,
+    });
   }
 
-  getUserById(id: number) {
-    const findUser = this.users.find((user) => user.id === id);
+  async getUser() {
+    const users = await this.userRepository.find();
+    if (users.length === 0) {
+      throw new NotFoundException('User Not Found');
+    }
+
+    return plainToInstance(UserResponseDTO, users, {
+      excludeExtraneousValues: true,
+    });
+  }
+
+  // checkUserByUsername(username: string) {
+  //   const findUser = this.users.find(
+  //     (user) => user.username.toLowerCase() === username.toLowerCase(),
+  //   );
+
+  //   if (findUser) {
+  //     return findUser;
+  //   }
+
+  //   return null;
+  // }
+
+  async getUserById(id: string) {
+    const findUser = await this.userRepository.findOneBy({
+      id,
+    });
     if (!findUser) return null;
 
     return plainToInstance(UserResponseDTO, findUser, {
@@ -44,43 +73,34 @@ export class UserService {
     });
   }
 
-  updateUser(data: UpdateUserDTO, id: number) {
+  async updateUser(data: UpdateUserDTO, id: string) {
     if (id === undefined) {
-      throw new BadRequestException('`id` is required for update');
+      throw new BadRequestException('id is required for update');
     }
 
-    const findUserIndex = this.users.findIndex((user) => user.id === id);
-    if (findUserIndex === -1) return null;
+    const updateData = await this.userRepository.update(id, {
+      username: data?.username,
+      name: data?.name,
+      email: data?.email,
+    });
 
-    const updatedUser: CreateUserDTO = {
-      ...this.users[findUserIndex],
-      ...data,
-      id: this.users[findUserIndex].id,
-    };
-
-    this.users[findUserIndex] = updatedUser;
-    return plainToInstance(UserResponseDTO, updatedUser, {
+    return plainToInstance(UserResponseDTO, updateData, {
       excludeExtraneousValues: true,
     });
   }
 
-  deleteUser(id: number) {
-    const findUserIndex = this.users.findIndex((user) => user.id === id);
-    if (findUserIndex === -1) return null;
-
-    const [deletedUser] = this.users.splice(findUserIndex, 1);
-    if (!deletedUser) return null;
-
-    return plainToInstance(UserResponseDTO, deletedUser, {
-      excludeExtraneousValues: true,
-    });
+  async deleteUser(id: string) {
+    return await this.userRepository.delete(id);
   }
 
-  getPaginatedData(pageNumber: number, perPage: number) {
+  async getPaginatedData(pageNumber: number, perPage: number) {
     const previousPage = (pageNumber - 1) * perPage;
     const NextPage = pageNumber * perPage;
 
-    const pageData = this.users.slice(previousPage, NextPage);
+    const pageData = await this.userRepository.findAndCount({
+      skip: previousPage,
+      take: NextPage,
+    });
 
     return plainToInstance(UserResponseDTO, pageData, {
       excludeExtraneousValues: true,

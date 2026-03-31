@@ -24,28 +24,25 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post()
-  createUser(@Body() body: CreateUserDTO) {
-    return this.userService.createUser(body);
+  async createUser(@Body() body: CreateUserDTO) {
+    return await this.userService.createUser(body);
   }
 
   @Get()
   @Roles('Admin')
   @UseGuards(AuthGuard)
-  getUser() {
-    const users = this.userService.getUser();
-    if (users.length === 0) {
-      throw new NotFoundException('User Not Found');
-    }
-
-    return users;
+  async getUser() {
+    return await this.userService.getUser();
   }
 
   @Get('paginated-data')
-  getPaginatedData(@Query() query: PaginationTodoDTO): UserResponseDTO[] {
+  async getPaginatedData(
+    @Query() query: PaginationTodoDTO,
+  ): Promise<UserResponseDTO[]> {
     const pageNumber = query.pageNumber ?? 1;
     const perPage = query.perPage ?? 10;
 
-    const data = this.userService.getPaginatedData(pageNumber, perPage);
+    const data = await this.userService.getPaginatedData(pageNumber, perPage);
 
     if (!data || data.length === 0) {
       throw new NotFoundException('Data not found');
@@ -55,8 +52,8 @@ export class UserController {
   }
 
   @Get(':id')
-  getUserById(@Param('id', ParseIntPipe) id: number) {
-    const user = this.userService.getUserById(id);
+  async getUserById(@Param('id') id: string) {
+    const user = await this.userService.getUserById(id);
 
     if (!user) {
       throw new NotFoundException('User Not Found');
@@ -66,11 +63,8 @@ export class UserController {
   }
 
   @Patch(':id')
-  updateUser(
-    @Body() body: UpdateUserDTO,
-    @Param('id', ParseIntPipe) id: number,
-  ) {
-    const updated = this.userService.updateUser(body, id);
+  async updateUser(@Body() body: UpdateUserDTO, @Param('id') id: string) {
+    const updated = await this.userService.updateUser(body, id);
     if (!updated) {
       throw new NotFoundException('User Not Found');
     }
@@ -80,8 +74,8 @@ export class UserController {
   @Delete(':id')
   @Roles('Admin')
   @UseGuards(AuthGuard)
-  deleteUser(@Param('id', ParseIntPipe) id: number) {
-    const deleted = this.userService.deleteUser(id);
+  async deleteUser(@Param('id') id: string) {
+    const deleted = await this.userService.deleteUser(id);
     if (!deleted) {
       throw new NotFoundException('User Not Found');
     }

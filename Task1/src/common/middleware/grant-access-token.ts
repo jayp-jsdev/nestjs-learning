@@ -10,7 +10,6 @@ export class GrantAccessToken implements NestMiddleware {
     try {
       if (!accessToken) {
         if (refreshToken) {
-          console.log('Generating AccessToken');
           const decodeRefreshTokenData = jwt.verify(
             refreshToken,
             process.env.SECRET_KEY || '',
