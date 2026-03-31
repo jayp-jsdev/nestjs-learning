@@ -57,11 +57,20 @@ export class AuthController {
     const accessToken = jwt.sign(existUser, process.env.SECRET_KEY!);
     const refreshToken = jwt.sign(existUser, process.env.SECRET_KEY!);
 
+    const accessTokenExpires = new Date(Date.now() + 1 * 24 * 60 * 60 * 1000);
+    const refreshTokenExpires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+
     request.user = existUser;
     response
       .status(HttpStatus.OK)
-      .cookie('access-token', accessToken)
-      .cookie('refreshToken', refreshToken)
+      .cookie('accessToken', accessToken, {
+        expires: accessTokenExpires,
+      })
+      .cookie('refreshToken', refreshToken, {
+        expires: refreshTokenExpires,
+        httpOnly: true,
+        secure: true,
+      })
       .json({
         user: existUser,
         accessToken: accessToken,

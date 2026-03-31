@@ -14,14 +14,15 @@ export class AuthGuard implements CanActivate {
     if (!requiredRoles) return true;
 
     const request = context.switchToHttp().getRequest();
-    const accessToken = request.headers.cookie.split(';')[0].split('=')[1];
+    const accessToken = request.cookies.accessToken;
+
     if (!accessToken) {
       return false;
     }
     const decoded = jwt.verify(accessToken, process.env.SECRET_KEY || '') as {
       role: string;
     };
-    console.log(decoded, 'sadaasdsdd', requiredRoles);
+
     return requiredRoles.includes(decoded?.role);
   }
 }

@@ -1,6 +1,7 @@
 import { NestFactory, RouterModule } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
+import cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -8,10 +9,12 @@ async function bootstrap() {
     new ValidationPipe({
       whitelist: true,
       transform: true,
-      forbidNonWhitelisted: true
-    })
-  ),
+      forbidNonWhitelisted: true,
+    }),
+  );
+  app.use(cookieParser());
   // RouterModule.register()
   await app.listen(process.env.PORT ?? 3000);
 }
+
 bootstrap();

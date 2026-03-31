@@ -7,6 +7,4 @@ export class AuthService {
     @Inject(forwardRef(() => UserService))
     private readonly userService: UserService,
   ) {}
-
-  
 }
