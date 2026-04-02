@@ -16,8 +16,8 @@ import { UserService } from './user.service';
 import { UpdateUserDTO } from './dto/update-user-dto';
 import { PaginationTodoDTO } from './dto/pagination-user';
 import { UserResponseDTO } from './dto/user-response-dto';
-import { AuthGuard } from 'src/common/guard/auth.guard';
-import { Roles } from 'src/common/decorators/roles.decorator';
+import { AuthGuard } from '../common/guard/auth.guard';
+import { Roles } from '../common/decorators/roles.decorator';
 @UseGuards(AuthGuard)
 @Controller()
 export class UserController {

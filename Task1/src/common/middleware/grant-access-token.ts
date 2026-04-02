@@ -4,6 +4,11 @@ import jwt from 'jsonwebtoken';
 
 export class GrantAccessToken implements NestMiddleware {
   use(req: Request, res: Response, next: NextFunction) {
+    const publicPaths = ['/auth/register', '/auth/login'];
+    if (publicPaths.includes(req.originalUrl)) {
+      return next();
+    }
+
     const accessToken = req.cookies.accessToken;
     const refreshToken = req.cookies.refreshToken;
 

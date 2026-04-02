@@ -8,6 +8,10 @@ import { ConfigModule } from '@nestjs/config';
 import { GrantAccessToken } from './common/middleware/grant-access-token';
 import { User } from './user/entity/user.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ProductModule } from './product/product.module';
+import { Order } from './order/entity/order.entity';
+import { Product } from './product/entity/product.entity';
+import { OrderModule } from './order/order.module';
 
 @Module({
   imports: [
@@ -19,11 +23,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     RouterModule.register([
       { path: 'user', module: UserModule },
       { path: 'auth', module: AuthModule },
+      { path: 'product', module: ProductModule },
+      { path: 'order', module: OrderModule },
     ]),
     TypeOrmModule.forRootAsync({
       useFactory: () => ({
         type: 'postgres',
-        entities: [User],
+        entities: [User, Order, Product],
         synchronize: true,
         host: process.env.HOST,
         port: Number(process.env.PORT) || 5433,
@@ -32,6 +38,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
         database: process.env.DATABASE,
       }),
     }),
+    ProductModule,
+    OrderModule,
   ],
   controllers: [AppController],
   providers: [AppService],

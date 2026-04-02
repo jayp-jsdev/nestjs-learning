@@ -1,31 +1,25 @@
-import {
-  IsEmail,
-  IsNotEmpty,
-  IsNumber,
-  IsString,
-  Matches,
-  Validate,
-} from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString, Matches } from 'class-validator';
+import { Roles } from '../entity/user.entity';
 
 export class CreateUserDTO {
   @IsNotEmpty({ message: 'Please Add Username' })
   @IsString()
-  username: string;
+  username!: string;
 
   @IsNotEmpty()
   @IsString()
-  name: string;
+  name!: string;
 
   @IsEmail()
   @IsNotEmpty()
-  email: string;
+  email!: string;
 
   @IsNotEmpty()
-  role: string;
+  role!: Roles;
 
   @IsNotEmpty()
   @Matches(/^[A-Za-z0-9@#$%^&*!]{6,}$/, {
     message: 'Password must be at least 6 characters',
   })
-  password: string;
+  password!: string;
 }

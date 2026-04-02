@@ -1,10 +1,10 @@
 import { Body, Controller, HttpStatus, Post, Req, Res } from '@nestjs/common';
 import type { Request, Response } from 'express';
-import { CreateUserDTO } from 'src/user/dto/create-user-dto';
 import { LoginUserDTO } from './dto/login-user-dto';
 import jwt from 'jsonwebtoken';
 import { AuthService } from './auth.service';
-import { User } from 'src/user/entity/user.entity';
+import { CreateUserDTO } from '../user/dto/create-user-dto';
+import { User } from '../user/entity/user.entity';
 
 interface CustomRequest extends Request {
   user?: User | null;

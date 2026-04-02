@@ -21,6 +21,7 @@ export class UserService {
   ) {}
 
   async createUser(user: CreateUserDTO) {
+    console.log(user, 'sadadasd');
     const checkUser = await this.userRepository.findOneBy({
       username: user.username,
     });
@@ -40,7 +41,11 @@ export class UserService {
   }
 
   async getUser() {
-    const users = await this.userRepository.find();
+    const users = await this.userRepository.find({
+      relations: {
+        order: true,
+      },
+    });
     if (users.length === 0) {
       throw new NotFoundException('User Not Found');
     }
@@ -63,8 +68,9 @@ export class UserService {
   // }
 
   async getUserById(id: string) {
-    const findUser = await this.userRepository.findOneBy({
-      id,
+    const findUser = await this.userRepository.findOne({
+      where: { id },
+      relations: ['order'],
     });
     if (!findUser) return null;
 
