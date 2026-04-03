@@ -12,6 +12,7 @@ import { ProductModule } from './product/product.module';
 import { Order } from './order/entity/order.entity';
 import { Product } from './product/entity/product.entity';
 import { OrderModule } from './order/order.module';
+import { OrderItem } from './order/entity/order-items.entity';
 
 @Module({
   imports: [
@@ -29,7 +30,8 @@ import { OrderModule } from './order/order.module';
     TypeOrmModule.forRootAsync({
       useFactory: () => ({
         type: 'postgres',
-        entities: [User, Order, Product],
+        // entities: [User, Order, Product, OrderItem],
+        autoLoadEntities: true,
         synchronize: true,
         host: process.env.HOST,
         port: Number(process.env.PORT) || 5433,

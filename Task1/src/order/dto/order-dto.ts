@@ -1,15 +1,10 @@
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
+import { OrderItemDTO } from './order-items-dto';
 
 export class OrderDTO {
-  @IsNotEmpty({ message: 'Please enter Quantity' })
-  @IsNumber()
-  quantity!: number;
-
-  @IsNotEmpty({ message: 'ProductID Must need' })
-  @IsString()
-  productId!: string;
-
   @IsNotEmpty({ message: 'UserID Must need' })
   @IsString()
   userId!: string;
+
+  items!: OrderItemDTO[];
 }

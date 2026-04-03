@@ -42,7 +42,9 @@ export class ProductService {
   }
 
   async getProduct() {
-    return await this.productRepository.find();
+    return await this.productRepository.find({
+      relations: ['order'],
+    });
   }
 
   async productPagination(pageNumber: number, perPage: number) {

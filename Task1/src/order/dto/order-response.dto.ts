@@ -19,5 +19,5 @@ export class OrderResponseDTO {
   user?: User;
 
   @Expose()
-  product?: Product;
+  product?: Product[];
 }

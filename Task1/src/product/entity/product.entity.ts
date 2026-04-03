@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Order } from '../../order/entity/order.entity';
 
 @Entity({ name: 'products' })
 export class Product {
