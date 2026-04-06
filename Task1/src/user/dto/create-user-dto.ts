@@ -1,5 +1,5 @@
 import { IsEmail, IsNotEmpty, IsString, Matches } from 'class-validator';
-import { Roles } from '../entity/user.entity';
+import { Roles } from '../../constant/Roles';
 
 export class CreateUserDTO {
   @IsNotEmpty({ message: 'Please Add Username' })

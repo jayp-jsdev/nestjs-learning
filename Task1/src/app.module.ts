@@ -6,13 +6,9 @@ import { RouterModule } from '@nestjs/core';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { GrantAccessToken } from './common/middleware/grant-access-token';
-import { User } from './user/entity/user.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProductModule } from './product/product.module';
-import { Order } from './order/entity/order.entity';
-import { Product } from './product/entity/product.entity';
 import { OrderModule } from './order/order.module';
-import { OrderItem } from './order/entity/order-items.entity';
 
 @Module({
   imports: [
@@ -32,12 +28,15 @@ import { OrderItem } from './order/entity/order-items.entity';
         type: 'postgres',
         // entities: [User, Order, Product, OrderItem],
         autoLoadEntities: true,
-        synchronize: true,
+        synchronize: false,
         host: process.env.HOST,
         port: Number(process.env.PORT) || 5433,
         username: 'postgres',
         password: process.env.PASSWORD,
         database: process.env.DATABASE,
+        entities: [__dirname + '/../**/*.entity{.ts,.js}'],
+        migrationsTableName: 'migrations',
+        migrations: [__dirname + '/migrations/*{.ts,.js}'],
       }),
     }),
     ProductModule,

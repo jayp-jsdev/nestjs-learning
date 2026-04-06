@@ -20,6 +20,10 @@ export class ProductDTO {
   @IsNumber()
   rating!: number;
 
+  @IsNotEmpty({ message: 'Please add stock' })
+  @IsNumber()
+  stock!: number;
+
   @IsNotEmpty({ message: 'Please Add Image' })
   @IsString()
   image!: string;

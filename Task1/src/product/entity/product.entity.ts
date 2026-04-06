@@ -1,5 +1,12 @@
-import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToMany,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Order } from '../../order/entity/order.entity';
+import { OrderItem } from '../../order/entity/order-item.entity';
 
 @Entity({ name: 'products' })
 export class Product {
@@ -31,8 +38,16 @@ export class Product {
   rating!: number;
 
   @Column({
+    type: 'int',
+  })
+  stock!: number;
+
+  @Column({
     type: 'varchar',
     nullable: false,
   })
   image!: string;
+
+  @ManyToMany(() => Order, (order) => order.products)
+  orders!: Order[];
 }

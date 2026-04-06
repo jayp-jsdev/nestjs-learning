@@ -1,10 +1,6 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Order } from '../../order/entity/order.entity';
-
-export enum Roles {
-  Admin = 'Admin',
-  User = 'User',
-}
+import { Roles } from '../../constant/Roles';
 
 @Entity()
 export class User {

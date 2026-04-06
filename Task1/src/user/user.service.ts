@@ -70,13 +70,10 @@ export class UserService {
   async getUserById(id: string) {
     const findUser = await this.userRepository.findOne({
       where: { id },
-      relations: ['order'],
     });
     if (!findUser) return null;
 
-    return plainToInstance(UserResponseDTO, findUser, {
-      excludeExtraneousValues: true,
-    });
+    return findUser;
   }
 
   async updateUser(data: UpdateUserDTO, id: string) {

@@ -43,7 +43,7 @@ export class ProductService {
 
   async getProduct() {
     return await this.productRepository.find({
-      relations: ['order'],
+      relations: ['orders'],
     });
   }
 
@@ -57,5 +57,13 @@ export class ProductService {
     });
 
     return pageData[0];
+  }
+
+  async findByIds(ids: string[]): Promise<Product[]> {
+    if (!ids.length) return [];
+    return this.productRepository
+      .createQueryBuilder('product')
+      .where('product.id IN (:...ids)', { ids })
+      .getMany();
   }
 }

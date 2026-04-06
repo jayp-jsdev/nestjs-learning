@@ -1,10 +1,12 @@
-import { IsNotEmpty, IsString } from 'class-validator';
-import { OrderItemDTO } from './order-items-dto';
+import { ArrayMinSize, IsArray, IsNotEmpty, IsUUID } from 'class-validator';
 
 export class OrderDTO {
-  @IsNotEmpty({ message: 'UserID Must need' })
-  @IsString()
+  @IsUUID()
+  @IsNotEmpty()
   userId!: string;
 
-  items!: OrderItemDTO[];
+  @IsArray()
+  @ArrayMinSize(1, { message: 'Order must contain at least one product' })
+  @IsUUID('all', { each: true, message: 'Each productId must be a valid UUID' })
+  productIds!: string[];
 }
