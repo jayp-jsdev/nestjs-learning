@@ -9,11 +9,13 @@ import { GrantAccessToken } from './common/middleware/grant-access-token';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProductModule } from './product/product.module';
 import { OrderModule } from './order/order.module';
+import { PassportModule } from '@nestjs/passport';
 
 @Module({
   imports: [
     UserModule,
     AuthModule,
+    PassportModule,
     ConfigModule.forRoot({
       isGlobal: true,
     }),
@@ -34,7 +36,7 @@ import { OrderModule } from './order/order.module';
         username: 'postgres',
         password: process.env.PASSWORD,
         database: process.env.DATABASE,
-        entities: [__dirname + '/../**/*.entity{.ts,.js}'],
+        // entities: [__dirname + '/../**/*.entity{.ts,.js}'],
         migrationsTableName: 'migrations',
         migrations: [__dirname + '/migrations/*{.ts,.js}'],
       }),

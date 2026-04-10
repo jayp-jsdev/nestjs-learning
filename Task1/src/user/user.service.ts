@@ -21,7 +21,6 @@ export class UserService {
   ) {}
 
   async createUser(user: CreateUserDTO) {
-    console.log(user, 'sadadasd');
     const checkUser = await this.userRepository.findOneBy({
       username: user.username,
     });

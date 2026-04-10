@@ -9,6 +9,7 @@ import {
   Patch,
   Post,
   Query,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { CreateUserDTO } from './dto/create-user-dto';
@@ -18,6 +19,9 @@ import { PaginationTodoDTO } from './dto/pagination-user';
 import { UserResponseDTO } from './dto/user-response-dto';
 import { AuthGuard } from '../common/guard/auth.guard';
 import { Roles } from '../common/decorators/roles.decorator';
+import { AuthGuard as AuthGuardPassport } from '@nestjs/passport';
+import { Request } from 'express';
+
 @UseGuards(AuthGuard)
 @Controller()
 export class UserController {
@@ -29,10 +33,11 @@ export class UserController {
   }
 
   @Get()
-  @Roles('Admin')
-  @UseGuards(AuthGuard)
-  async getUser() {
-    return await this.userService.getUser();
+  // @Roles('Admin')
+  // @UseGuards(AuthGuard)
+  @UseGuards(AuthGuardPassport('jwt'))
+  async getUser(@Req() req) {
+    return req.user;
   }
 
   @Get('paginated-data')

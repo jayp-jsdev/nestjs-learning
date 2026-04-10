@@ -5,6 +5,8 @@ import bcrypt from 'bcrypt';
 import { User } from '../user/entity/user.entity';
 import { UserService } from '../user/user.service';
 import { CreateUserDTO } from '../user/dto/create-user-dto';
+import { plainToInstance } from 'class-transformer';
+import { UserResponseDTO } from '../user/dto/user-response-dto';
 
 @Injectable()
 export class AuthService {
@@ -31,6 +33,8 @@ export class AuthService {
       throw new HttpException('Wrong Password', HttpStatus.UNAUTHORIZED);
     }
 
-    return existUser;
+    return plainToInstance(UserResponseDTO, existUser, {
+      excludeExtraneousValues: true,
+    });
   }
 }

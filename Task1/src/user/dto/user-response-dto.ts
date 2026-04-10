@@ -18,7 +18,7 @@ export class UserResponseDTO {
   @Type(() => OrderResponseDTO)
   order!: OrderResponseDTO[];
 
-  @Exclude()
+  @Expose()
   role!: string;
 
   @Exclude()

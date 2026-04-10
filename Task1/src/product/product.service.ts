@@ -13,7 +13,6 @@ export class ProductService {
     try {
       return await this.productRepository.save(body);
     } catch (error) {
-      console.log(error);
       throw new HttpException(
         'Product creation failed',
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -33,7 +32,6 @@ export class ProductService {
 
       return await this.productRepository.update(body.id, body);
     } catch (error: any) {
-      console.log(error, 'Failed to update user');
       throw new HttpException(
         error.message || 'Failed to update user',
         HttpStatus.INTERNAL_SERVER_ERROR,

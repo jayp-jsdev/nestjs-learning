@@ -81,7 +81,7 @@ export class OrderService {
           });
         });
 
-        const saveOrderItem = await manager.save(OrderItem, orderItem);
+        await manager.save(OrderItem, orderItem);
 
         return order;
       });
