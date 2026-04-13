@@ -9,18 +9,10 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import type { Request, Response } from 'express';
-import { LoginUserDTO } from './dto/login-user-dto';
-import jwt from 'jsonwebtoken';
 import { AuthService } from './auth.service';
 import { CreateUserDTO } from '../user/dto/create-user-dto';
-import { User } from '../user/entity/user.entity';
 import { JwtService } from '@nestjs/jwt';
-import { AuthGuard } from '@nestjs/passport';
-import { LocalAuthGuard } from './guards/local-auth-guard';
-
-interface CustomRequest extends Request {
-  user?: User | undefined;
-}
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
 
 @Controller()
 export class AuthController {
@@ -41,7 +33,7 @@ export class AuthController {
     } catch (error) {
       response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
         message: 'Internal server error',
-        error: error,
+        error: error as Error,
       });
     }
   }
@@ -88,8 +80,9 @@ export class AuthController {
 
   @HttpCode(HttpStatus.OK)
   @Post('login')
-  @UseGuards(LocalAuthGuard)
-  async login(@Req() req) {
-    return req.user;
+  @UseGuards(JwtAuthGuard)
+  login(@Req() req: Request) {
+    console.log('Login successful, user:', req.user);
+    // return req.user;
   }
 }

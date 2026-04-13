@@ -1,6 +1,7 @@
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import { CanActivate, type ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import jwt from 'jsonwebtoken';
+import { RequestWithCookies } from '../../lib/type';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -13,8 +14,8 @@ export class AuthGuard implements CanActivate {
     ]);
     if (!requiredRoles) return true;
 
-    const request = context.switchToHttp().getRequest();
-    const accessToken = request.cookies.accessToken;
+    const request = context.switchToHttp().getRequest<RequestWithCookies>();
+    const accessToken = request.cookies?.accessToken;
 
     if (!accessToken) {
       return false;

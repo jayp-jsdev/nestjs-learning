@@ -5,7 +5,6 @@ import {
   Get,
   NotFoundException,
   Param,
-  ParseIntPipe,
   Patch,
   Post,
   Query,
@@ -20,7 +19,7 @@ import { UserResponseDTO } from './dto/user-response-dto';
 import { AuthGuard } from '../common/guard/auth.guard';
 import { Roles } from '../common/decorators/roles.decorator';
 import { AuthGuard as AuthGuardPassport } from '@nestjs/passport';
-import { Request } from 'express';
+import { type Request } from 'express';
 
 @UseGuards(AuthGuard)
 @Controller()
@@ -36,7 +35,7 @@ export class UserController {
   // @Roles('Admin')
   // @UseGuards(AuthGuard)
   @UseGuards(AuthGuardPassport('jwt'))
-  async getUser(@Req() req) {
+  getUser(@Req() req: Request) {
     return req.user;
   }
 

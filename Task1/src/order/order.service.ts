@@ -10,6 +10,7 @@ import { DataSource, Repository } from 'typeorm';
 import { ProductService } from '../product/product.service';
 import { UserService } from '../user/user.service';
 import { OrderItem } from './entity/order-item.entity';
+import { OrderDTO } from './dto/order-dto';
 
 @Injectable()
 export class OrderService {
@@ -23,7 +24,7 @@ export class OrderService {
     private usersService: UserService,
   ) {}
 
-  async createOrder(body) {
+  async createOrder(body: OrderDTO) {
     try {
       const user = await this.usersService.getUserById(body.userId);
       if (!user) {
@@ -89,7 +90,10 @@ export class OrderService {
       return orderData;
     } catch (error) {
       throw new HttpException(
-        'Order creation failed',
+        {
+          error: (error as Error).message || 'Internal Server Error',
+          message: 'Order creation failed',
+        },
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }

@@ -1,5 +1,10 @@
 import { ArrayMinSize, IsArray, IsNotEmpty, IsUUID } from 'class-validator';
 
+interface product {
+  productId: string;
+  quantity: number;
+}
+
 export class OrderDTO {
   @IsUUID()
   @IsNotEmpty()
@@ -7,6 +12,5 @@ export class OrderDTO {
 
   @IsArray()
   @ArrayMinSize(1, { message: 'Order must contain at least one product' })
-  @IsUUID('all', { each: true, message: 'Each productId must be a valid UUID' })
-  productIds!: string[];
+  products!: product[];
 }

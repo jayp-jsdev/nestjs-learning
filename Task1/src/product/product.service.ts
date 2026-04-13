@@ -2,6 +2,8 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Product } from './entity/product.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ProductDTO } from './dto/product-dto';
+import { UpdateProductDTO } from './dto/update-product-dto';
 
 @Injectable()
 export class ProductService {
@@ -9,18 +11,18 @@ export class ProductService {
     @InjectRepository(Product) private productRepository: Repository<Product>,
   ) {}
 
-  async addProdcut(body) {
+  async addProdcut(body: ProductDTO) {
     try {
       return await this.productRepository.save(body);
     } catch (error) {
       throw new HttpException(
-        'Product creation failed',
+        (error as Error)?.message || 'Failed to create product',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
 
-  async updateProduct(body) {
+  async updateProduct(body: UpdateProductDTO) {
     try {
       const findProduct = await this.productRepository.findBy({
         id: body.id,
@@ -30,10 +32,10 @@ export class ProductService {
         throw new HttpException('Product Not Found', HttpStatus.BAD_REQUEST);
       }
 
-      return await this.productRepository.update(body.id, body);
+      return await this.productRepository.update(body.id || '', body);
     } catch (error: any) {
       throw new HttpException(
-        error.message || 'Failed to update user',
+        (error as Error)?.message || 'Failed to update user',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }

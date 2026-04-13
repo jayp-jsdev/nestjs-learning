@@ -9,7 +9,7 @@ import { CreateUserDTO } from './dto/create-user-dto';
 import { UpdateUserDTO } from './dto/update-user-dto';
 import { plainToInstance } from 'class-transformer';
 import { UserResponseDTO } from './dto/user-response-dto';
-import bcrypt from 'bcrypt';
+import * as bcrypt from 'bcrypt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entity/user.entity';
 import { Repository } from 'typeorm';
@@ -29,7 +29,7 @@ export class UserService {
       throw new HttpException('User Already Exist', HttpStatus.OK);
     }
 
-    const hashPassword = (await bcrypt.hash(user.password, 10)) as string;
+    const hashPassword = await bcrypt.hash(user.password, 10);
     const userData = plainToInstance(User, { ...user, password: hashPassword });
 
     await this.userRepository.save(userData);
