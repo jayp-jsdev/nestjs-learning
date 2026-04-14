@@ -1,50 +1,57 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+  UseInterceptors,
+} from '@nestjs/common';
 import { Product } from './entity/product.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ProductDTO } from './dto/product-dto';
 import { UpdateProductDTO } from './dto/update-product-dto';
+import {
+  CACHE_MANAGER,
+  CacheInterceptor,
+  CacheKey,
+  CacheTTL,
+} from '@nestjs/cache-manager';
+import * as cacheManager_1 from 'cache-manager';
+import { RedisStore } from 'cache-manager-redis-store';
 
 @Injectable()
+@UseInterceptors(CacheInterceptor)
 export class ProductService {
+  private readonly redisStore!: RedisStore;
+
   constructor(
     @InjectRepository(Product) private productRepository: Repository<Product>,
-  ) {}
+    @Inject(CACHE_MANAGER) private cacheManager: cacheManager_1.Cache,
+  ) {
+    this.redisStore = this.cacheManager.stores as unknown as RedisStore;
+  }
 
   async addProdcut(body: ProductDTO) {
-    try {
-      return await this.productRepository.save(body);
-    } catch (error) {
-      throw new HttpException(
-        (error as Error)?.message || 'Failed to create product',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
+    return await this.productRepository.save(body);
   }
 
   async updateProduct(body: UpdateProductDTO) {
-    try {
-      const findProduct = await this.productRepository.findBy({
-        id: body.id,
-      });
+    const findProduct = await this.productRepository.findBy({
+      id: body.id,
+    });
 
-      if (findProduct.length === 0) {
-        throw new HttpException('Product Not Found', HttpStatus.BAD_REQUEST);
-      }
-
-      return await this.productRepository.update(body.id || '', body);
-    } catch (error: any) {
-      throw new HttpException(
-        (error as Error)?.message || 'Failed to update user',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+    if (findProduct.length === 0) {
+      throw new HttpException('Product Not Found', HttpStatus.BAD_REQUEST);
     }
+
+    return await this.productRepository.update(body.id || '', body);
   }
 
+  @CacheKey('all_products')
+  @CacheTTL(20)
   async getProduct() {
-    return await this.productRepository.find({
-      relations: ['orders'],
-    });
+    const products = await this.productRepository.find();
+    return products;
   }
 
   async productPagination(pageNumber: number, perPage: number) {

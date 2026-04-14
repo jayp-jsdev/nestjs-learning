@@ -9,16 +9,19 @@ import { LocalStrategy } from './strategies/local.Strategy';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import jwtConfig from './config/jwt-config';
 import { ConfigModule } from '@nestjs/config';
+import jwtRefreshTokenConfig from './config/refresh-config';
+import { PassportModule } from '@nestjs/passport';
 
 @Module({
   providers: [AuthService, LocalStrategy, JwtStrategy],
   controllers: [AuthController],
   imports: [
     UserModule,
+    PassportModule,
     TypeOrmModule.forFeature([User]),
-    ConfigModule.forFeature(jwtConfig),
-    JwtModule,
     JwtModule.registerAsync(jwtConfig.asProvider()),
+    ConfigModule.forFeature(jwtConfig),
+    ConfigModule.forFeature(jwtRefreshTokenConfig),
   ],
 })
 export class AuthModule {}

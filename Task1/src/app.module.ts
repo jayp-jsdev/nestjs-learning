@@ -2,22 +2,23 @@ import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
-import { RouterModule } from '@nestjs/core';
+import { APP_INTERCEPTOR, RouterModule } from '@nestjs/core';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { GrantAccessToken } from './common/middleware/grant-access-token';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProductModule } from './product/product.module';
 import { OrderModule } from './order/order.module';
-import { PassportModule } from '@nestjs/passport';
+import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
+import { RedisOptions } from './config/redis-config';
 
 @Module({
   imports: [
     UserModule,
     AuthModule,
-    PassportModule,
     ProductModule,
     OrderModule,
+    CacheModule.register(RedisOptions),
     ConfigModule.forRoot({
       isGlobal: true,
     }),
@@ -45,7 +46,13 @@ import { PassportModule } from '@nestjs/passport';
     }),
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_INTERCEPTOR, // Binding the interceptor globally
+      useClass: CacheInterceptor,
+    },
+  ],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

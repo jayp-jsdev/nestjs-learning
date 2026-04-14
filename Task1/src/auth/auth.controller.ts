@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   HttpCode,
   HttpStatus,
   Post,
@@ -12,6 +13,7 @@ import type { Request, Response } from 'express';
 import { AuthService } from './auth.service';
 import { CreateUserDTO } from '../user/dto/create-user-dto';
 import { JwtService } from '@nestjs/jwt';
+import { LocalAuthGuard } from './guards/local-auth.guard';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 
 @Controller()
@@ -79,10 +81,30 @@ export class AuthController {
   // }
 
   @HttpCode(HttpStatus.OK)
+  @UseGuards(LocalAuthGuard)
   @Post('login')
+  login(@Req() req: Request, @Res() response: Response) {
+    const { accessToken, refreshToken } = this.authService.login(req.user);
+
+    response
+      .status(HttpStatus.OK)
+      .cookie('accessToken', accessToken, {
+        expires: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000),
+      })
+      .cookie('refreshToken', refreshToken, {
+        expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+        httpOnly: true,
+        secure: true,
+      })
+      .json({
+        user: req.user,
+        accessToken: accessToken,
+      });
+  }
+
   @UseGuards(JwtAuthGuard)
-  login(@Req() req: Request) {
-    console.log('Login successful, user:', req.user);
-    // return req.user;
+  @Get('profile')
+  getProfile(@Req() req: Request) {
+    return req.user;
   }
 }

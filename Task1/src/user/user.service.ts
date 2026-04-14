@@ -54,24 +54,12 @@ export class UserService {
     });
   }
 
-  // checkUserByUsername(username: string) {
-  //   const findUser = this.users.find(
-  //     (user) => user.username.toLowerCase() === username.toLowerCase(),
-  //   );
-
-  //   if (findUser) {
-  //     return findUser;
-  //   }
-
-  //   return null;
-  // }
-
   async getUserById(id: string) {
     const findUser = await this.userRepository.findOne({
       where: { id },
+      relations: ['order'],
     });
-    if (!findUser) return null;
-
+    if (!findUser) throw new NotFoundException('User Not Found');
     return findUser;
   }
 
@@ -79,6 +67,11 @@ export class UserService {
     if (id === undefined) {
       throw new BadRequestException('id is required for update');
     }
+
+    const findUser = await this.userRepository.findOne({
+      where: { id },
+    });
+    if (!findUser) throw new NotFoundException('User Not Found');
 
     const updateData = await this.userRepository.update(id, {
       username: data?.username,
@@ -92,6 +85,11 @@ export class UserService {
   }
 
   async deleteUser(id: string) {
+    const findUser = await this.userRepository.findOne({
+      where: { id },
+    });
+    if (!findUser) throw new NotFoundException('User Not Found');
+
     return await this.userRepository.delete(id);
   }
 

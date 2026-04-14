@@ -3,7 +3,6 @@ import {
   Controller,
   Delete,
   Get,
-  NotFoundException,
   Param,
   Patch,
   Post,
@@ -18,8 +17,8 @@ import { PaginationTodoDTO } from './dto/pagination-user';
 import { UserResponseDTO } from './dto/user-response-dto';
 import { AuthGuard } from '../common/guard/auth.guard';
 import { Roles } from '../common/decorators/roles.decorator';
-import { AuthGuard as AuthGuardPassport } from '@nestjs/passport';
 import { type Request } from 'express';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @UseGuards(AuthGuard)
 @Controller()
@@ -32,9 +31,7 @@ export class UserController {
   }
 
   @Get()
-  // @Roles('Admin')
-  // @UseGuards(AuthGuard)
-  @UseGuards(AuthGuardPassport('jwt'))
+  @UseGuards(JwtAuthGuard)
   getUser(@Req() req: Request) {
     return req.user;
   }
@@ -46,43 +43,23 @@ export class UserController {
     const pageNumber = query.pageNumber ?? 1;
     const perPage = query.perPage ?? 10;
 
-    const data = await this.userService.getPaginatedData(pageNumber, perPage);
-
-    if (!data || data.length === 0) {
-      throw new NotFoundException('Data not found');
-    }
-
-    return data;
+    return await this.userService.getPaginatedData(pageNumber, perPage);
   }
 
   @Get(':id')
   async getUserById(@Param('id') id: string) {
-    const user = await this.userService.getUserById(id);
-
-    if (!user) {
-      throw new NotFoundException('User Not Found');
-    }
-
-    return user;
+    return await this.userService.getUserById(id);
   }
 
   @Patch(':id')
   async updateUser(@Body() body: UpdateUserDTO, @Param('id') id: string) {
-    const updated = await this.userService.updateUser(body, id);
-    if (!updated) {
-      throw new NotFoundException('User Not Found');
-    }
-    return updated;
+    return await this.userService.updateUser(body, id);
   }
 
   @Delete(':id')
   @Roles('Admin')
   @UseGuards(AuthGuard)
   async deleteUser(@Param('id') id: string) {
-    const deleted = await this.userService.deleteUser(id);
-    if (!deleted) {
-      throw new NotFoundException('User Not Found');
-    }
-    return deleted;
+    return await this.userService.deleteUser(id);
   }
 }

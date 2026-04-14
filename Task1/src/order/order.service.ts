@@ -36,10 +36,33 @@ export class OrderService {
       );
 
       const checkStock = products.find((item) => item.stock <= 0);
+
       if (checkStock) {
         throw new BadRequestException({
           checkStock,
           message: 'Product OutofStock',
+        });
+      }
+
+      const checkQuantity = products
+        .map((item) => {
+          const findQuantity = body.products.find(
+            (product) => product.productId === item.id,
+          );
+          if (findQuantity && item.stock < findQuantity.quantity) {
+            return {
+              productId: item.id,
+              name: item.name,
+              availableStock: item.stock,
+              requestedQuantity: findQuantity.quantity,
+            };
+          }
+        })
+        .filter(Boolean);
+
+      if (checkQuantity.length > 0) {
+        throw new BadRequestException({
+          message: 'Insufficient stock for some products',
         });
       }
 
@@ -99,8 +122,11 @@ export class OrderService {
     }
   }
 
-  async getOrder() {
-    return await this.orderRepository.find({
+  async getOrder(userId: string) {
+    return await this.orderRepository.findOne({
+      where: {
+        userId,
+      },
       relations: ['products', 'orderItems'],
     });
   }

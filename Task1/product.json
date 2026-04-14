@@ -1,0 +1,392 @@
+[
+  {
+    "name": "Wireless Mouse",
+    "price": 1200,
+    "category": "Accessories",
+    "image": "product1.png",
+    "rating": 4,
+    "stock": 15
+  },
+  {
+    "name": "Gaming Keyboard",
+    "price": 2500,
+    "category": "Accessories",
+    "image": "product2.png",
+    "rating": 5,
+    "stock": 20
+  },
+  {
+    "name": "USB-C Cable",
+    "price": 300,
+    "category": "Accessories",
+    "image": "product3.png",
+    "rating": 3,
+    "stock": 50
+  },
+  {
+    "name": "Bluetooth Speaker",
+    "price": 1800,
+    "category": "Electronics",
+    "image": "product4.png",
+    "rating": 4,
+    "stock": 25
+  },
+  {
+    "name": "Laptop Stand",
+    "price": 900,
+    "category": "Accessories",
+    "image": "product5.png",
+    "rating": 4,
+    "stock": 18
+  },
+  {
+    "name": "Webcam HD",
+    "price": 2200,
+    "category": "Electronics",
+    "image": "product6.png",
+    "rating": 5,
+    "stock": 12
+  },
+  {
+    "name": "Noise Cancelling Headphones",
+    "price": 5500,
+    "category": "Electronics",
+    "image": "product7.png",
+    "rating": 5,
+    "stock": 10
+  },
+  {
+    "name": "Smart Watch",
+    "price": 7000,
+    "category": "Electronics",
+    "image": "product8.png",
+    "rating": 4,
+    "stock": 8
+  },
+  {
+    "name": "Fitness Band",
+    "price": 2000,
+    "category": "Electronics",
+    "image": "product9.png",
+    "rating": 4,
+    "stock": 30
+  },
+  {
+    "name": "Portable Charger",
+    "price": 1500,
+    "category": "Accessories",
+    "image": "product10.png",
+    "rating": 4,
+    "stock": 22
+  },
+
+  {
+    "name": "Mechanical Keyboard",
+    "price": 3200,
+    "category": "Accessories",
+    "image": "product11.png",
+    "rating": 5,
+    "stock": 14
+  },
+  {
+    "name": "Gaming Mouse",
+    "price": 1800,
+    "category": "Accessories",
+    "image": "product12.png",
+    "rating": 4,
+    "stock": 16
+  },
+  {
+    "name": "LED Monitor",
+    "price": 12000,
+    "category": "Electronics",
+    "image": "product13.png",
+    "rating": 5,
+    "stock": 6
+  },
+  {
+    "name": "External Hard Drive",
+    "price": 4500,
+    "category": "Electronics",
+    "image": "product14.png",
+    "rating": 4,
+    "stock": 11
+  },
+  {
+    "name": "SSD Drive",
+    "price": 6000,
+    "category": "Electronics",
+    "image": "product15.png",
+    "rating": 5,
+    "stock": 9
+  },
+  {
+    "name": "USB Hub",
+    "price": 800,
+    "category": "Accessories",
+    "image": "product16.png",
+    "rating": 3,
+    "stock": 40
+  },
+  {
+    "name": "Wireless Charger",
+    "price": 1300,
+    "category": "Accessories",
+    "image": "product17.png",
+    "rating": 4,
+    "stock": 19
+  },
+  {
+    "name": "Phone Tripod",
+    "price": 700,
+    "category": "Accessories",
+    "image": "product18.png",
+    "rating": 3,
+    "stock": 27
+  },
+  {
+    "name": "Tablet Stand",
+    "price": 950,
+    "category": "Accessories",
+    "image": "product19.png",
+    "rating": 4,
+    "stock": 21
+  },
+  {
+    "name": "Gaming Chair",
+    "price": 15000,
+    "category": "Furniture",
+    "image": "product20.png",
+    "rating": 5,
+    "stock": 5
+  },
+
+  {
+    "name": "Office Chair",
+    "price": 8000,
+    "category": "Furniture",
+    "image": "product21.png",
+    "rating": 4,
+    "stock": 7
+  },
+  {
+    "name": "Study Table",
+    "price": 6000,
+    "category": "Furniture",
+    "image": "product22.png",
+    "rating": 4,
+    "stock": 6
+  },
+  {
+    "name": "Desk Lamp",
+    "price": 1200,
+    "category": "Home",
+    "image": "product23.png",
+    "rating": 4,
+    "stock": 18
+  },
+  {
+    "name": "Smart Bulb",
+    "price": 900,
+    "category": "Home",
+    "image": "product24.png",
+    "rating": 3,
+    "stock": 25
+  },
+  {
+    "name": "Electric Kettle",
+    "price": 1500,
+    "category": "Home",
+    "image": "product25.png",
+    "rating": 4,
+    "stock": 13
+  },
+  {
+    "name": "Air Fryer",
+    "price": 5000,
+    "category": "Home",
+    "image": "product26.png",
+    "rating": 5,
+    "stock": 9
+  },
+  {
+    "name": "Mixer Grinder",
+    "price": 3500,
+    "category": "Home",
+    "image": "product27.png",
+    "rating": 4,
+    "stock": 10
+  },
+  {
+    "name": "Vacuum Cleaner",
+    "price": 7000,
+    "category": "Home",
+    "image": "product28.png",
+    "rating": 5,
+    "stock": 8
+  },
+  {
+    "name": "Water Bottle",
+    "price": 300,
+    "category": "Home",
+    "image": "product29.png",
+    "rating": 3,
+    "stock": 60
+  },
+  {
+    "name": "Backpack",
+    "price": 1200,
+    "category": "Fashion",
+    "image": "product30.png",
+    "rating": 4,
+    "stock": 20
+  },
+
+  {
+    "name": "Running Shoes",
+    "price": 3000,
+    "category": "Fashion",
+    "image": "product31.png",
+    "rating": 5,
+    "stock": 15
+  },
+  {
+    "name": "Casual T-Shirt",
+    "price": 800,
+    "category": "Fashion",
+    "image": "product32.png",
+    "rating": 4,
+    "stock": 40
+  },
+  {
+    "name": "Jeans Pants",
+    "price": 2000,
+    "category": "Fashion",
+    "image": "product33.png",
+    "rating": 4,
+    "stock": 25
+  },
+  {
+    "name": "Sunglasses",
+    "price": 1500,
+    "category": "Fashion",
+    "image": "product34.png",
+    "rating": 4,
+    "stock": 18
+  },
+  {
+    "name": "Wrist Watch",
+    "price": 4000,
+    "category": "Fashion",
+    "image": "product35.png",
+    "rating": 5,
+    "stock": 10
+  },
+
+  {
+    "name": "Notebook",
+    "price": 200,
+    "category": "Stationery",
+    "image": "product36.png",
+    "rating": 3,
+    "stock": 80
+  },
+  {
+    "name": "Ball Pen",
+    "price": 50,
+    "category": "Stationery",
+    "image": "product37.png",
+    "rating": 3,
+    "stock": 150
+  },
+  {
+    "name": "Marker Set",
+    "price": 300,
+    "category": "Stationery",
+    "image": "product38.png",
+    "rating": 4,
+    "stock": 60
+  },
+  {
+    "name": "Office File",
+    "price": 120,
+    "category": "Stationery",
+    "image": "product39.png",
+    "rating": 3,
+    "stock": 90
+  },
+  {
+    "name": "Stapler",
+    "price": 250,
+    "category": "Stationery",
+    "image": "product40.png",
+    "rating": 4,
+    "stock": 45
+  },
+
+  {
+    "name": "Yoga Mat",
+    "price": 900,
+    "category": "Fitness",
+    "image": "product41.png",
+    "rating": 4,
+    "stock": 22
+  },
+  {
+    "name": "Dumbbells Set",
+    "price": 2500,
+    "category": "Fitness",
+    "image": "product42.png",
+    "rating": 5,
+    "stock": 12
+  },
+  {
+    "name": "Skipping Rope",
+    "price": 300,
+    "category": "Fitness",
+    "image": "product43.png",
+    "rating": 4,
+    "stock": 35
+  },
+  {
+    "name": "Treadmill",
+    "price": 25000,
+    "category": "Fitness",
+    "image": "product44.png",
+    "rating": 5,
+    "stock": 4
+  },
+
+  {
+    "name": "Toy Car",
+    "price": 500,
+    "category": "Toys",
+    "image": "product45.png",
+    "rating": 4,
+    "stock": 30
+  },
+  {
+    "name": "Building Blocks",
+    "price": 1200,
+    "category": "Toys",
+    "image": "product46.png",
+    "rating": 5,
+    "stock": 20
+  },
+  {
+    "name": "Puzzle Game",
+    "price": 700,
+    "category": "Toys",
+    "image": "product47.png",
+    "rating": 4,
+    "stock": 25
+  },
+  {
+    "name": "Doll Set",
+    "price": 1500,
+    "category": "Toys",
+    "image": "product48.png",
+    "rating": 4,
+    "stock": 15
+  }
+]

@@ -10,8 +10,11 @@ export class GrantAccessToken implements NestMiddleware {
       return next();
     }
 
-    const accessToken = req.cookies.accessToken;
-    const refreshToken = req.cookies.refreshToken;
+    let accessToken = req.cookies?.accessToken;
+    if (!accessToken && req.headers?.authorization?.startsWith('Bearer ')) {
+      accessToken = req.headers.authorization.split(' ')[1];
+    }
+    const refreshToken = req.cookies?.refreshToken;
 
     try {
       if (!accessToken) {
