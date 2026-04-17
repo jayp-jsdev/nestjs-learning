@@ -2,15 +2,16 @@ import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
-import { APP_INTERCEPTOR, RouterModule } from '@nestjs/core';
+import { RouterModule } from '@nestjs/core';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { GrantAccessToken } from './common/middleware/grant-access-token';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProductModule } from './product/product.module';
 import { OrderModule } from './order/order.module';
-import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
-import { RedisOptions } from './config/redis-config';
+import { BullModule } from '@nestjs/bullmq';
+import { EmailWorker } from './common/workers/email-worker';
+import { MailerModule } from '@nestjs-modules/mailer';
 
 @Module({
   imports: [
@@ -18,9 +19,26 @@ import { RedisOptions } from './config/redis-config';
     AuthModule,
     ProductModule,
     OrderModule,
-    CacheModule.register(RedisOptions),
     ConfigModule.forRoot({
       isGlobal: true,
+    }),
+    BullModule.forRootAsync({
+      useFactory: () => ({
+        connection: {
+          url: process.env.REDIS_URL || 'redis://localhost:6379',
+        },
+      }),
+    }),
+    MailerModule.forRootAsync({
+      useFactory: () => ({
+        transport: {
+          service: 'gmail',
+          auth: {
+            user: 'jayp.jsdev@gmail.com',
+            pass: 'kzly ogak gbqu come',
+          },
+        },
+      }),
     }),
     RouterModule.register([
       { path: 'user', module: UserModule },
@@ -46,13 +64,7 @@ import { RedisOptions } from './config/redis-config';
     }),
   ],
   controllers: [AppController],
-  providers: [
-    AppService,
-    {
-      provide: APP_INTERCEPTOR, // Binding the interceptor globally
-      useClass: CacheInterceptor,
-    },
-  ],
+  providers: [AppService, EmailWorker],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

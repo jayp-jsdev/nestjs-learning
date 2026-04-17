@@ -6,3 +6,9 @@ export type RequestWithCookies = Request & {
     refreshToken?: string;
   };
 };
+
+export interface mailType {
+  to: string;
+  subject: string;
+  html: string;
+}

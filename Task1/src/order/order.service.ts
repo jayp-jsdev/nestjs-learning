@@ -11,6 +11,8 @@ import { ProductService } from '../product/product.service';
 import { UserService } from '../user/user.service';
 import { OrderItem } from './entity/order-item.entity';
 import { OrderDTO } from './dto/order-dto';
+import { InjectQueue } from '@nestjs/bullmq';
+import { Queue } from 'bullmq';
 
 @Injectable()
 export class OrderService {
@@ -22,6 +24,7 @@ export class OrderService {
     private productService: ProductService,
     private dataSource: DataSource,
     private usersService: UserService,
+    @InjectQueue('email-queue') private emailQueue: Queue,
   ) {}
 
   async createOrder(body: OrderDTO) {
@@ -108,6 +111,12 @@ export class OrderService {
         await manager.save(OrderItem, orderItem);
 
         return order;
+      });
+
+      await this.emailQueue.add('send-mail', {
+        to: 'jayp.jsdev@gmail.com',
+        subject: 'Order Confirmation',
+        html: orderData.products.map((item) => item.name).join(', '),
       });
 
       return orderData;

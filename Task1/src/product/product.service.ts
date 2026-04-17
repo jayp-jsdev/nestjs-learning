@@ -1,41 +1,27 @@
-import {
-  HttpException,
-  HttpStatus,
-  Inject,
-  Injectable,
-  UseInterceptors,
-} from '@nestjs/common';
+/* eslint-disable @typescript-eslint/no-misused-promises */
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Product } from './entity/product.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ProductDTO } from './dto/product-dto';
 import { UpdateProductDTO } from './dto/update-product-dto';
-import {
-  CACHE_MANAGER,
-  CacheInterceptor,
-  CacheKey,
-  CacheTTL,
-} from '@nestjs/cache-manager';
-import * as cacheManager_1 from 'cache-manager';
-import { RedisStore } from 'cache-manager-redis-store';
+import { CacheKey, CacheTTL } from '@nestjs/cache-manager';
+import { RedisService } from '../config/redis-config';
 
 @Injectable()
-@UseInterceptors(CacheInterceptor)
 export class ProductService {
-  private readonly redisStore!: RedisStore;
-
   constructor(
     @InjectRepository(Product) private productRepository: Repository<Product>,
-    @Inject(CACHE_MANAGER) private cacheManager: cacheManager_1.Cache,
-  ) {
-    this.redisStore = this.cacheManager.stores as unknown as RedisStore;
-  }
+    private readonly redisService: RedisService,
+  ) {}
 
   async addProdcut(body: ProductDTO) {
     return await this.productRepository.save(body);
   }
 
   async updateProduct(body: UpdateProductDTO) {
+    const redisClient = this.redisService.getClient();
+
     const findProduct = await this.productRepository.findBy({
       id: body.id,
     });
@@ -43,14 +29,28 @@ export class ProductService {
     if (findProduct.length === 0) {
       throw new HttpException('Product Not Found', HttpStatus.BAD_REQUEST);
     }
-
+    await redisClient.del('products');
     return await this.productRepository.update(body.id || '', body);
   }
 
-  @CacheKey('all_products')
-  @CacheTTL(20)
+  @CacheKey('products')
+  @CacheTTL(60)
   async getProduct() {
-    const products = await this.productRepository.find();
+    const redisClient = this.redisService.getClient();
+    const cachedProducts = await redisClient.get('products');
+    if (cachedProducts) {
+      console.log('Products retrieved from cache');
+      return JSON.parse(cachedProducts) as JSON;
+    }
+
+    const products = await new Promise((resolve) =>
+      setTimeout(async (): Promise<any> => {
+        const products = await this.productRepository.find();
+        resolve(products);
+      }, 2000),
+    );
+    await redisClient.set('products', JSON.stringify(products), 'EX', 60);
+    console.log('Products retrieved from database');
     return products;
   }
 
