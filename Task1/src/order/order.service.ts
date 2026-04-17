@@ -113,30 +113,45 @@ export class OrderService {
         return order;
       });
 
-      await this.emailQueue.add('send-mail', {
-        to: 'jayp.jsdev@gmail.com',
-        subject: 'Order Confirmation',
-        html: orderData.products.map((item) => item.name).join(', '),
-      });
+      await this.emailQueue.add(
+        'send-mail',
+        {
+          to: user.email,
+          subject: 'Order Confirmation',
+          html: orderData.products.map((item) => item.name).join(', '),
+        },
+        {
+          attempts: 5,
+          backoff: {
+            type: 'fixed',
+            delay: 1000,
+          },
+        },
+      );
 
       return orderData;
-    } catch (error) {
+    } catch (err) {
+      if (err instanceof HttpException) throw err;
       throw new HttpException(
-        {
-          error: (error as Error).message || 'Internal Server Error',
-          message: 'Order creation failed',
-        },
+        (err as Error).message,
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
 
   async getOrder(userId: string) {
-    return await this.orderRepository.findOne({
-      where: {
-        userId,
-      },
-      relations: ['products', 'orderItems'],
-    });
+    try {
+      return await this.orderRepository.findOne({
+        where: {
+          userId,
+        },
+        relations: ['products', 'orderItems'],
+      });
+    } catch (err) {
+      throw new HttpException(
+        (err as Error).message,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 }

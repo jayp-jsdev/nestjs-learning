@@ -1,7 +1,9 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
+  Param,
   Patch,
   Post,
   Query,
@@ -36,8 +38,16 @@ export class ProductController {
     );
   }
 
-  @Patch()
-  async updateProduct(@Body() body: UpdateProductDTO) {
-    return await this.productService.updateProduct(body);
+  @Patch(':id')
+  async updateProduct(
+    @Param('id') param: string,
+    @Body() body: UpdateProductDTO,
+  ) {
+    return await this.productService.updateProduct(body, param);
+  }
+
+  @Delete(':id')
+  async deleteProduct(@Param('id') id: string) {
+    return this.productService.deleteProduct(id);
   }
 }

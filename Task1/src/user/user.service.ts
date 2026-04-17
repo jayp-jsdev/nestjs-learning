@@ -1,10 +1,4 @@
-import {
-  BadRequestException,
-  HttpException,
-  HttpStatus,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateUserDTO } from './dto/create-user-dto';
 import { UpdateUserDTO } from './dto/update-user-dto';
 import { plainToInstance } from 'class-transformer';
@@ -21,89 +15,145 @@ export class UserService {
   ) {}
 
   async createUser(user: CreateUserDTO) {
-    const checkUser = await this.userRepository.findOneBy({
-      username: user.username,
-    });
+    try {
+      const checkUser = await this.userRepository.findOneBy({
+        username: user.username,
+      });
 
-    if (checkUser) {
-      throw new HttpException('User Already Exist', HttpStatus.OK);
+      if (checkUser) {
+        throw new HttpException('User Already Exist', HttpStatus.CONFLICT);
+      }
+
+      const hashPassword = await bcrypt.hash(user.password, 10);
+      const userData = plainToInstance(User, {
+        ...user,
+        password: hashPassword,
+      });
+
+      await this.userRepository.save(userData);
+
+      return plainToInstance(UserResponseDTO, userData, {
+        excludeExtraneousValues: true,
+      });
+    } catch (err) {
+      if (err instanceof HttpException) throw err;
+      throw new HttpException(
+        (err as Error).message,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
-
-    const hashPassword = await bcrypt.hash(user.password, 10);
-    const userData = plainToInstance(User, { ...user, password: hashPassword });
-
-    await this.userRepository.save(userData);
-
-    return plainToInstance(UserResponseDTO, userData, {
-      excludeExtraneousValues: true,
-    });
   }
 
   async getUser() {
-    const users = await this.userRepository.find({
-      relations: {
-        order: true,
-      },
-    });
-    if (users.length === 0) {
-      throw new NotFoundException('User Not Found');
-    }
+    try {
+      const users = await this.userRepository.find({
+        relations: {
+          order: true,
+        },
+      });
+      if (users.length === 0) {
+        throw new HttpException('User Not Found', HttpStatus.NOT_FOUND);
+      }
 
-    return plainToInstance(UserResponseDTO, users, {
-      excludeExtraneousValues: true,
-    });
+      return plainToInstance(UserResponseDTO, users, {
+        excludeExtraneousValues: true,
+      });
+    } catch (err) {
+      if (err instanceof HttpException) throw err;
+      throw new HttpException(
+        (err as Error).message,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
   async getUserById(id: string) {
-    const findUser = await this.userRepository.findOne({
-      where: { id },
-      relations: ['order'],
-    });
-    if (!findUser) throw new NotFoundException('User Not Found');
-    return findUser;
+    try {
+      const findUser = await this.userRepository.findOne({
+        where: { id },
+        relations: ['order'],
+      });
+      if (!findUser)
+        throw new HttpException('User Not Found', HttpStatus.NOT_FOUND);
+      return findUser;
+    } catch (err) {
+      if (err instanceof HttpException) throw err;
+      throw new HttpException(
+        (err as Error).message,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
   async updateUser(data: UpdateUserDTO, id: string) {
-    if (id === undefined) {
-      throw new BadRequestException('id is required for update');
+    try {
+      if (id === undefined) {
+        throw new HttpException(
+          'id is required for update',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
+      const findUser = await this.userRepository.findOne({
+        where: { id },
+      });
+      if (!findUser)
+        throw new HttpException('User Not Found', HttpStatus.NOT_FOUND);
+
+      const updateData = await this.userRepository.update(id, {
+        username: data?.username,
+        name: data?.name,
+        email: data?.email,
+      });
+
+      return plainToInstance(UserResponseDTO, updateData, {
+        excludeExtraneousValues: true,
+      });
+    } catch (err) {
+      if (err instanceof HttpException) throw err;
+      throw new HttpException(
+        (err as Error).message,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
-
-    const findUser = await this.userRepository.findOne({
-      where: { id },
-    });
-    if (!findUser) throw new NotFoundException('User Not Found');
-
-    const updateData = await this.userRepository.update(id, {
-      username: data?.username,
-      name: data?.name,
-      email: data?.email,
-    });
-
-    return plainToInstance(UserResponseDTO, updateData, {
-      excludeExtraneousValues: true,
-    });
   }
 
   async deleteUser(id: string) {
-    const findUser = await this.userRepository.findOne({
-      where: { id },
-    });
-    if (!findUser) throw new NotFoundException('User Not Found');
+    try {
+      const findUser = await this.userRepository.findOne({
+        where: { id },
+      });
+      if (!findUser)
+        throw new HttpException('User Not Found', HttpStatus.NOT_FOUND);
 
-    return await this.userRepository.delete(id);
+      return await this.userRepository.delete(id);
+    } catch (err) {
+      if (err instanceof HttpException) throw err;
+      throw new HttpException(
+        (err as Error).message,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
   async getPaginatedData(pageNumber: number, perPage: number) {
-    const previousPage = (pageNumber - 1) * perPage;
-    const NextPage = pageNumber * perPage;
+    try {
+      const previousPage = (pageNumber - 1) * perPage;
+      const NextPage = pageNumber * perPage;
 
-    const pageData = await this.userRepository.findAndCount({
-      skip: previousPage,
-      take: NextPage,
-    });
+      const pageData = await this.userRepository.findAndCount({
+        skip: previousPage,
+        take: NextPage,
+      });
 
-    return plainToInstance(UserResponseDTO, pageData, {
-      excludeExtraneousValues: true,
-    });
+      return plainToInstance(UserResponseDTO, pageData, {
+        excludeExtraneousValues: true,
+      });
+    } catch (err) {
+      throw new HttpException(
+        (err as Error).message,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 }

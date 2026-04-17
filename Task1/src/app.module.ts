@@ -34,8 +34,8 @@ import { MailerModule } from '@nestjs-modules/mailer';
         transport: {
           service: 'gmail',
           auth: {
-            user: 'jayp.jsdev@gmail.com',
-            pass: 'kzly ogak gbqu come',
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASSWORD,
           },
         },
       }),
@@ -51,7 +51,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
         type: 'postgres',
         // entities: [User, Order, Product, OrderItem],
         autoLoadEntities: true,
-        synchronize: true,
+        synchronize: true, // do not include this in production
         host: process.env.HOST,
         port: Number(process.env.PORT) || 5433,
         username: 'postgres',
